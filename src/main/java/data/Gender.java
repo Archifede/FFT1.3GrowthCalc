@@ -50,11 +50,11 @@ public enum Gender {
 
     @Override
     public String toString() {
-        return " | STATS : " +
-                "rawHp{Min-Max}={" + (int) rawHps[0] + "-" + (int) rawHps[1] +
-                "}" + " rawMp{Min-Max}={" + (int) rawMps[0] + "-" + (int) rawMps[1] +
-                "} rawSpeed=" + (int) rawSpeed +
-                " rawPa=" + (int) rawPa +
-                " rawMa=" + (int) rawMa;
+        return " | Raw Stats : " +
+                "Hp{Min-Max}={" + (int) rawHps[0] + "-" + (int) rawHps[1] +
+                "}" + " Mp{Min-Max}={" + (int) rawMps[0] + "-" + (int) rawMps[1] +
+                "} Speed=" + (int) rawSpeed +
+                " Pa=" + (int) rawPa +
+                " Ma=" + (int) rawMa;
     }
 }

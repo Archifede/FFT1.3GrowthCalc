@@ -67,7 +67,7 @@ public class Console {
     private <T extends Enum<T>> T select(Class<T> clazz, Scanner scanner) {
         T[] enumm = clazz.getEnumConstants();
         for (Enum t : enumm) {
-            System.out.print(t.name() + " : choose " + t.ordinal());
+            System.out.print("For " +t.name() + " : press \'" + t.ordinal()+"\' and return");
             System.out.println(t);
         }
         System.out.print("\n>Please enter your choice : ");
@@ -83,7 +83,7 @@ public class Console {
         while (!((NumberUtils.isNumber(scanned)) && (choiceNum < enumm.length))) {
             System.out.println(">Error");
             for (Enum t : enumm) {
-                System.out.print(t.name() + " : choose " + t.ordinal());
+                System.out.print("For " +t.name() + " : press \'" + t.ordinal()+"\' and return");
                 System.out.println(t);
             }
 
