@@ -6,7 +6,6 @@ import java.util.Arrays;
  * @author Victor
  * @since 29 avril 13h57
  */
-@SuppressWarnings("unused")
 public enum Gender {
 
     MALE(new double[]{491520, 524287}, new double[]{229376, 245759}, 98304, 81920, 65536),

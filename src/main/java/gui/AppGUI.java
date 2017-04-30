@@ -1,9 +1,12 @@
 package gui;
 
-public class AppGUI {
+public final class AppGUI {
 	
-	public static void main(String[] args) {
+	public final static void main(String[] args) {
 		
-		new FrameApp().setVisible(true);
+		FrameApp frame = new FrameApp();
+		GuiController controller = GuiController.getInstance(frame);
+		controller.start();
+		frame.setVisible(true);
 	}
 }

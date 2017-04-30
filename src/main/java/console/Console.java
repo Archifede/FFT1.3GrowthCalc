@@ -19,7 +19,7 @@ public class Console {
 
 
     public void compute() {
-
+    	    	
         System.out.println(MESSAGE);
         Scanner scanner = new Scanner(System.in);
         int level = Params.STARTING_LEVEL;
@@ -66,7 +66,7 @@ public class Console {
 
     private <T extends Enum<T>> T select(Class<T> clazz, Scanner scanner) {
         T[] enumm = clazz.getEnumConstants();
-        for (Enum t : enumm) {
+        for (Enum<?> t : enumm) {
             System.out.print("For " +t.name() + " : press \'" + t.ordinal()+"\' and return");
             System.out.println(t);
         }
@@ -82,7 +82,7 @@ public class Console {
             choiceNum = Integer.parseInt(scanned);
         while (!((NumberUtils.isNumber(scanned)) && (choiceNum < enumm.length))) {
             System.out.println(">Error");
-            for (Enum t : enumm) {
+            for (Enum<?> t : enumm) {
                 System.out.print("For " +t.name() + " : press \'" + t.ordinal()+"\' and return");
                 System.out.println(t);
             }

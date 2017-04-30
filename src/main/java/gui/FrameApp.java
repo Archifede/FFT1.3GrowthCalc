@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.EtchedBorder;
 
 
 /**
@@ -18,6 +17,9 @@ public final class FrameApp extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = -3797364490221587074L;
+	private InputSelectionPanel inputSelection;
+	private InputValuesPanel inputValues;
+	private OutputValuesPanel outputValues;
 
 	public FrameApp() {
 		
@@ -29,25 +31,40 @@ public final class FrameApp extends JFrame{
 		this.setLayout(config.frameLayout);
 		this.setIcon();
 		
-		this.add(config.getTitle(),BorderLayout.NORTH);
-		this.add(new InputSelectionPanel(),BorderLayout.CENTER);
-		this.add(new InputValuesPanel(), BorderLayout.SOUTH);
+		/* add all the input panels inside one panel */		
+		JPanel inputPanel = new JPanel();
+		FlowLayout layout = (FlowLayout) inputPanel.getLayout();
+		layout.setHgap(100);
+		layout.setVgap(250);
 		
-		this.addBorderToPanels();
+		inputPanel.add(this.inputSelection = new InputSelectionPanel());
+		inputPanel.add(this.inputValues = new InputValuesPanel());
+		
+		this.add(config.getTitle(),BorderLayout.NORTH);
+		this.add(inputPanel,BorderLayout.CENTER);
+		this.inputValues.generateValues();
+		this.add(this.outputValues = new OutputValuesPanel(), BorderLayout.SOUTH);
+		this.outputValues.generateValues();
+		
+		addBorderToPanels((JPanel) this.getContentPane());
 	}
 	
 	/**
-	 * Add a border to all the JPanels in this frame
+	 * Add a border to all the JPanels recursively
 	 */
-	private void addBorderToPanels() {
+	private static void addBorderToPanels(JPanel panel) {
 		
-		for(Component component : this.getContentPane().getComponents())
-			
-			if(component instanceof JPanel)
+		for(int i=0;i<panel.getComponentCount();i++) {
+						
+			if(panel.getComponent(i) instanceof JPanel) {
 				
-				((JPanel) component).setBorder(
+				addBorderToPanels((JPanel) panel.getComponent(i));
+				((JPanel)panel.getComponent(i)).setBorder(
 						BorderFactory.createLineBorder(Color.BLACK)
 						);
+			}
+				
+		}
 				
 	}
 
@@ -61,8 +78,32 @@ public final class FrameApp extends JFrame{
 		
 	}
 	
-
+	/**
+	 * 
+	 * @return the inputSelection JPanel
+	 */
+	public InputSelectionPanel getInputSelection() {
+		
+		return this.inputSelection;
+	}
 	
+	/**
+	 * 
+	 * @return the inputValues JPanel
+	 */
+	public InputValuesPanel getInputValues() {
+		
+		return this.inputValues;
+	}
+
+	/**
+	 * 
+	 * @return the outputValues JPanel
+	 */
+	public OutputValuesPanel getOutputValues() {
+		
+		return this.outputValues;
+	}
 	
 	
 }

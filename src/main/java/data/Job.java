@@ -4,7 +4,6 @@ package data;
  * @author Victor
  * @since 23 avril 23h38
  */
-@SuppressWarnings("unused")
 public enum Job {
     MIME(8, 8, 90, 40, 40),
     THIEF(10, 16, 80, 45, 55),

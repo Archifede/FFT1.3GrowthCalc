@@ -11,7 +11,7 @@ import data.*;
  * @author Only Brad
  *
  */
-public final class InputSelectionPanel extends JPanel {
+final class InputSelectionPanel extends JPanel {
 
 	/**
 	 * 
@@ -28,10 +28,10 @@ public final class InputSelectionPanel extends JPanel {
 		/* Add the combo box and labels in the panel */
 		JLabel genderLabel = new JLabel("Gender");
 		this.add(genderLabel);
-		this.add(this.genders = new JComboBox<>(getGenders()));
+		this.add(this.genders = new JComboBox<>(getGendersName()));
 		JLabel jobLabel = new JLabel("Job");
 		this.add(jobLabel);
-		this.add(this.jobs = new JComboBox<>(getJobs()));
+		this.add(this.jobs = new JComboBox<>(getJobsName()));
 		
 		/* attach the label to the combo box */
 		genderLabel.setLabelFor(this.genders);
@@ -41,17 +41,22 @@ public final class InputSelectionPanel extends JPanel {
 	
 	/**
 	 * 
+	 * @return 
 	 * @return an array of String containing the names of elements of an enum in lower case
 	 */
 	private static <E extends Enum<E>> String[] getEnumNames(Class<E> clazz) {
 		
-		String[] enumStrings = new String[clazz.getEnumConstants().length];
+		E[] e = clazz.getEnumConstants();
 		
-		for(int i=0;i<enumStrings.length;i++)
+		String[] enumNames = new String[e.length];
+		
+		for(int i=0;i<enumNames.length;i++)
 			
-			enumStrings[i] = clazz.getEnumConstants()[i].name().toLowerCase();
+			enumNames[i] = e[i].name().toLowerCase();
 		
-		return enumStrings;
+		return enumNames;
+				
+				
 	}
 
 	/**
@@ -59,7 +64,7 @@ public final class InputSelectionPanel extends JPanel {
 	 * @return an array of String containing the names of the jobs in lower case using
 	 * the Job enum.
 	 */
-	private static String[] getJobs() {
+	private static String[] getJobsName() {
 		
 		return getEnumNames(Job.class);
 	}
@@ -69,9 +74,28 @@ public final class InputSelectionPanel extends JPanel {
 	 * @return an array of String containing the names of the genders in lower case using the 
 	 * Gender enum.
 	 */
-	private static String[] getGenders() {
+	private static String[] getGendersName() {
 		
 		return getEnumNames(Gender.class);
 	}
 	
+	/**
+	 * 
+	 * @return the JComboBox jobs
+	 */
+	public JComboBox<String> getJobs() {
+		
+		return this.jobs;
+	}
+	
+	/**
+	 * 
+	 * @return the JComboBox genders
+	 */
+	public JComboBox<String> getGenders() {
+		
+		return this.genders;
+	}
+
+
 }
