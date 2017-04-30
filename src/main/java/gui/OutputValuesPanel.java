@@ -28,7 +28,6 @@ final class OutputValuesPanel extends InputValuesPanel {
 				"Final Raw Physical Attack",
 				"Final Raw Magic"
 				});
-		
 	}
 	
 	@Override
