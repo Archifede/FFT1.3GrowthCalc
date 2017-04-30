@@ -47,7 +47,6 @@ public enum Gender {
         return rawMa;
     }
 
-
     @Override
     public String toString() {
         return " | Raw Stats : " +
