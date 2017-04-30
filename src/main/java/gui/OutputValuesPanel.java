@@ -28,6 +28,16 @@ final class OutputValuesPanel extends InputValuesPanel {
 				"Final Raw Physical Attack",
 				"Final Raw Magic"
 				});
+
+	}
+	
+	@Override
+	protected void createTextFields() {
+		
+		super.createTextFields();
+		
+		this.textFields[HP].setEditable(false);
+		this.textFields[MP].setEditable(false);
 	}
 	
 	@Override
