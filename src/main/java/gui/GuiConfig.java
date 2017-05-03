@@ -2,8 +2,13 @@ package gui;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Enumeration;
+
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
+
 
 /**
  * 
@@ -18,30 +23,72 @@ public final class GuiConfig {
 
 	private static GuiConfig instance = new GuiConfig(); //Singleton
 	
-	private final String lookAndFeel;
-	private final String title;
+	private final String LOOK_AND_FEEL;
+	private final String TITLE;
+	private final String FONT_PATH;
+	private final String TACTIC_FONT_NAME;
 	
-	public final Dimension frameSize;
-	public final String ramza;
-	public final LayoutManager frameLayout;
-	public final LayoutManager inputSelectionLayout;
-	public final LayoutManager inputValuesLayout;
-	public final Font h1;
-	public final Font h2;
-
+	public final Dimension FRAME_SIZE;
+	public final String RAMZA;
+	public final LayoutManager FRAME_LAYOUT;
+	public final LayoutManager INPUT_SELECTION_LAYOUT;
+	public final LayoutManager INPUT_VALUE_LAYOUT;
+	public final Font H1;
+	public final Font H2;
+	public final Font TACTIC_FONT;
+	public final int TITLE_SIZE;
+	public final int LABEL_SIZE;
+	public final String[] STATS;
+	
 	private GuiConfig() {
 		
-		this.lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-		this.title = "FFT 1.3 GrowthCalc";
-		this.h1 = this.h1();
-		this.h2 = this.h2();
-		this.frameSize = new Dimension(1024,768);
-		this.ramza = Paths.get(new File("").getAbsolutePath(),"ico","ramza.png").toString();
-		this.frameLayout = new BorderLayout();
-		this.inputSelectionLayout = new FlowLayout();
-		this.inputValuesLayout = new GridLayout(0,2);
+		/* strings */
+		this.LOOK_AND_FEEL = UIManager.getSystemLookAndFeelClassName();
+		this.TITLE = "FFT 1.3 GrowthCalc";
+		this.TACTIC_FONT_NAME = "Final_Fantasy_Tactics.ttf";getClass();
+		this.STATS = new String[]{"HP","MP","Speed","Physical Damage","Magic"};
+		
+		/* path strings */
+		this.RAMZA = Paths.get(new File("").getAbsolutePath(),"ico","ramza.png").toString();
+		this.FONT_PATH = Paths.get(new File("").getAbsolutePath(),"font").toString();
+		
+		/* values */
+		this.TITLE_SIZE = 50;
+		this.LABEL_SIZE = 30;
+		
+		/* fonts */
+		this.H1 = this.h1();
+		this.H2 = this.h2();
+		this.TACTIC_FONT = generateTacticFont();
+		
+		/* layouts */
+		this.FRAME_LAYOUT = new BorderLayout();
+		this.INPUT_SELECTION_LAYOUT = new FlowLayout();
+		this.INPUT_VALUE_LAYOUT = new GridLayout(0,2);
+		
+		/* dimensions */
+		this.FRAME_SIZE = new Dimension(1024,768);
+		
 	}
 	
+	private Font generateTacticFont() {
+		
+		String path = Paths.get(
+				this.FONT_PATH,this.TACTIC_FONT_NAME
+				).toString();
+
+	    try {
+			Font font = Font.createFont(Font.TRUETYPE_FONT, new File(path));
+			font = font.deriveFont(Font.PLAIN,this.TITLE_SIZE);
+		    
+		    return font;
+		    
+			
+		} catch (FontFormatException | IOException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * 
 	 * @return the font of the "h1" label
@@ -82,7 +129,7 @@ public final class GuiConfig {
 	public void setLookAndFeel() {
 		
 		try {
-			UIManager.setLookAndFeel(this.lookAndFeel);
+			UIManager.setLookAndFeel(this.LOOK_AND_FEEL);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
@@ -95,10 +142,10 @@ public final class GuiConfig {
 	 */
 	public JLabel getTitle() {
 		
-		JLabel title = new JLabel(this.title);
-		title.setFont(this.h1);
+		JLabel title = new JLabel(this.TITLE);
+		title.setFont(this.TACTIC_FONT);
 		title.setHorizontalAlignment(JLabel.CENTER);
 		return title;
 	}
-	
+
 }

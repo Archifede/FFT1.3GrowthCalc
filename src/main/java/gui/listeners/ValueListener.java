@@ -1,4 +1,4 @@
-package gui;
+package gui.listeners;
 
 import java.util.Observable;
 
@@ -6,14 +6,14 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- * This is the class that listens to the JTextField changes. Whenever a stats (HP and MP)
- * is changed, all observers are notified (example the JTextFields of the OutPutValuesPanel class)
- *  
+ * This is the class that listens to the JTextField changes. Whenever a stat
+ * is changed, all observers are notified. To use with a text field that need 
+ * synchronize with other components in the GUI.
  * 
  * @author Only Brad
  *
  */
-public class StatValueListener extends Observable implements DocumentListener {
+public final class ValueListener extends Observable implements DocumentListener {
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {

@@ -1,5 +1,7 @@
 package gui;
 
+import gui.listeners.GuiController;
+
 public final class AppGUI {
 	
 	public final static void main(String[] args) {

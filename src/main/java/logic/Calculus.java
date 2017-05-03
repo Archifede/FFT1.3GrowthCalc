@@ -21,6 +21,18 @@ public class Calculus {
         return addedStat;
     }
 
-
+    
+    public static double computeStat(double rawStat, int currentLevel, int nextLevel, int c ) {
+    	
+    	double addedStat = rawStat;
+    	
+    	while (currentLevel < nextLevel) {
+    		
+    		addedStat += levelUpBonus(addedStat, currentLevel, c);
+    		currentLevel++;
+    	}
+    	
+    	return addedStat;
+    }
 
 }

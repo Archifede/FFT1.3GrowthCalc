@@ -17,93 +17,39 @@ public final class FrameApp extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = -3797364490221587074L;
-	private InputSelectionPanel inputSelection;
-	private InputValuesPanel inputValues;
-	private OutputValuesPanel outputValues;
 
 	public FrameApp() {
 		
 		GuiConfig config = GuiConfig.getInstance();
 		
 		config.setLookAndFeel();
-		this.setSize(config.frameSize);
+		this.setSize(config.FRAME_SIZE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLayout(config.frameLayout);
-		this.setIcon();
+		this.setLayout(config.FRAME_LAYOUT);
+		this.setIcon();	
 		
-		/* add all the input panels inside one panel */		
+		/* put the both input panels (static and dynamic) in one panel, North and South respectively */
 		JPanel inputPanel = new JPanel();
-		FlowLayout layout = (FlowLayout) inputPanel.getLayout();
-		layout.setHgap(100);
-		layout.setVgap(250);
+		inputPanel.setLayout(new BorderLayout());
+		inputPanel.add(new StaticInputPanel(),BorderLayout.NORTH);
+		inputPanel.add(new DynamicInputPanel(),BorderLayout.CENTER);
 		
-		inputPanel.add(this.inputSelection = new InputSelectionPanel());
-		inputPanel.add(this.inputValues = new InputValuesPanel());
-		
+		/* Put the title in the top portion, the input area in the middle and the output on the bottom */
 		this.add(config.getTitle(),BorderLayout.NORTH);
 		this.add(inputPanel,BorderLayout.CENTER);
-		this.inputValues.generateValues();
-		this.add(this.outputValues = new OutputValuesPanel(), BorderLayout.SOUTH);
-		this.outputValues.generateValues();
-		
-		addBorderToPanels((JPanel) this.getContentPane());
-	}
-	
-	/**
-	 * Add a border to all the JPanels recursively
-	 */
-	private static void addBorderToPanels(JPanel panel) {
-		
-		for(int i=0;i<panel.getComponentCount();i++) {
-						
-			if(panel.getComponent(i) instanceof JPanel) {
-				
-				addBorderToPanels((JPanel) panel.getComponent(i));
-				((JPanel)panel.getComponent(i)).setBorder(
-						BorderFactory.createLineBorder(Color.BLACK)
-						);
-			}
-				
-		}
-				
-	}
+		this.add(new StatsPanel.InitialStatsPanel(),BorderLayout.SOUTH);
 
+	}
+		
 	/**
 	 * Sets the face of Ramza as the icon of the program
 	 */
 	private void setIcon() {
 		
-		ImageIcon image = new ImageIcon(GuiConfig.getInstance().ramza);
+		ImageIcon image = new ImageIcon(GuiConfig.getInstance().RAMZA);
 		this.setIconImage(image.getImage());
 		
 	}
-	
-	/**
-	 * 
-	 * @return the inputSelection JPanel
-	 */
-	public InputSelectionPanel getInputSelection() {
-		
-		return this.inputSelection;
-	}
-	
-	/**
-	 * 
-	 * @return the inputValues JPanel
-	 */
-	public InputValuesPanel getInputValues() {
-		
-		return this.inputValues;
-	}
 
-	/**
-	 * 
-	 * @return the outputValues JPanel
-	 */
-	public OutputValuesPanel getOutputValues() {
-		
-		return this.outputValues;
-	}
-	
 	
 }
