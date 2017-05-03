@@ -50,7 +50,7 @@ public enum Job {
 
     @Override
     public String toString() {
-        return " | Growths : " +
+        return " | " +
                 "hpC=" + hpC +
                 ", mpC=" + mpC +
                 ", spC=" + spC +

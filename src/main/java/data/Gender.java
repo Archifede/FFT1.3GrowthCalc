@@ -25,6 +25,7 @@ public enum Gender {
     private final double rawSpeed;
     private final double rawPa;
     private final double rawMa;
+    private static boolean firstToStringCall = false;
 
     public double[] getRawHps() {
         return Arrays.copyOf(rawHps,rawHps.length);
@@ -48,7 +49,8 @@ public enum Gender {
 
     @Override
     public String toString() {
-        return " | Raw Stats : " +
+
+        return " | "+
                 "Hp{Min-Max}={" + (int) rawHps[0] + "-" + (int) rawHps[1] +
                 "}" + " Mp{Min-Max}={" + (int) rawMps[0] + "-" + (int) rawMps[1] +
                 "} Speed=" + (int) rawSpeed +
