@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import gui.StatsPanel.FinalStatsPanel;
+import gui.menu.TacticMenuBar;
 
 
 /**
@@ -19,35 +20,21 @@ public final class FrameApp extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = -3797364490221587074L;
-	private FinalStatsPanel output;
-
+	
+	private JTabbedPane tab;
+	
 	public FrameApp() {
 		
 		GuiConfig config = GuiConfig.getInstance();
 		
-		config.setLookAndFeel();
-		this.setSize(config.FRAME_SIZE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLayout(new BorderLayout());
+		this.setSize(config.FRAME_SIZE);
 		this.setIcon();	
-		this.getContentPane().setBackground(config.PANEL_COLOR);
+		this.setJMenuBar(new TacticMenuBar());
+		config.setLookAndFeel();
 		
-		/* put the both input panels (static and dynamic) in one panel, North and South respectively */
-		JPanel inputPanel = new JPanel();
-		inputPanel.setLayout(new BorderLayout());
-		inputPanel.add(new StaticInputPanel(),BorderLayout.NORTH);
-		inputPanel.add(new DynamicInputPanel(),BorderLayout.CENTER);
-		
-		/* create the output panel and insert the FinalStatsPanel in it */
-		JPanel outputPanel = new JPanel();
-		outputPanel.add(this.output = new StatsPanel.FinalStatsPanel());
-		outputPanel.setBackground(config.PANEL_COLOR);
-		
-		/* Put the title in the top portion, the input area in the middle and the output on the bottom */
-		this.add(config.getTitle(),BorderLayout.NORTH);
-		this.add(inputPanel,BorderLayout.CENTER);
-		this.add(outputPanel,BorderLayout.SOUTH);
-
+		this.add(this.tab = new JTabbedPane());
+		this.newTab();
 	}
 		
 	/**
@@ -61,16 +48,15 @@ public final class FrameApp extends JFrame{
 	}
 	
 	/**
-	 * Method called when a new inputArea was added in this frame, the output will
-	 * be added as an observer to the documentlistener of newly created inputArea
+	 * Create a new tab for Character stat calculation
 	 * 
-	 * @param inputArea
 	 */
-	void updateOutput(InputArea inputArea) {
+	public void newTab() {
 		
-		inputArea.getNextListener().addObserver(this.output);
+		GuiConfig config = GuiConfig.getInstance();
 		
+		CharacterStatsPanel newPanel = new CharacterStatsPanel(config.nextTabId());
+		tab.add(newPanel.getName(), newPanel);
 	}
-
 	
 }

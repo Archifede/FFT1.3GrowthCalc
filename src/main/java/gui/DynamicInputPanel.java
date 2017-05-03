@@ -10,7 +10,6 @@ import data.Params;
 import gui.components.ButtonContants;
 import gui.components.ValuesConstants;
 import gui.listeners.ButtonListener;
-import gui.listeners.ValueListener;
 
 
 /**
@@ -59,14 +58,20 @@ final class DynamicInputPanel extends JPanel implements Observer,ButtonContants,
 			
 			int lastIndex = this.getComponentCount()-1;
 			InputArea previousArea = (InputArea) this.getComponent(lastIndex);
-			minLevel = Integer.parseInt(previousArea.getNextLevelPanel().getText());
+			minLevel = Integer.parseInt(previousArea.getNextLevel().getText());
 			
-			/* desactivate the previous "Ok" button */
+			/* desactivate the previous "Ok" button and the Next Level text field */
 			previousArea.getOkButton().setEnabled(false);
+			previousArea.getNextLevel().setEditable(false);
+			
 		}
 
 		InputArea inputArea = new InputArea(minLevel);
 		this.addButtonListener(inputArea);
+		
+		if(this.getComponentCount() == 0)
+			
+			inputArea.getCurrentLevel().setEditable(true);
 		
 		this.add(inputArea);
 	}
@@ -95,9 +100,9 @@ final class DynamicInputPanel extends JPanel implements Observer,ButtonContants,
 	 */
 	private void notifyNewChange() {
 
-		FrameApp frame = (FrameApp) this.getTopLevelAncestor();
+		/*FrameApp frame = (FrameApp) this.getTopLevelAncestor();
 		InputArea inputArea = (InputArea) this.getComponent(this.getComponentCount()-1);
-		frame.updateOutput(inputArea);	
+		frame.updateOutput(inputArea);	*/
 	}
 
 	/**

@@ -46,8 +46,7 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 	private LevelTextField nextLevel;
 	private Jobs jobs;
 	private JButton ok;
-	private ValueListener currentListener;
-	private ValueListener nextListener;
+	private ValueListener listener;
 	
 	/**
 	 * 
@@ -150,11 +149,11 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		int currentLevel = 0;
 		int nextLevel = 0;
 
-		/* verify if there are values other than numbers inside the text field 
+		/* verify if there are values other than numbers inside the text fields 
 		 * (happens when deleted or replacing a value)
 		 */
 		
-		if(this.nextLevel.getText().equals("")) {
+		if(this.nextLevel.getText().equals("") || this.currentLevel.getText().equals("") ) {
 		
 			this.ok.setEnabled(false);
 			return;
@@ -175,16 +174,17 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		
 	}
 	
-	/** add a listener to the "nextLevel" text field of this object 
+	/** add a listener to the "next level" and "current level" text field of this object 
 	* to verify the condition nextLevel > currentLevel
     * whenever a new value is entered in nextLevel, 
     * the listener will notify this object
 	*/
 	private void addValueListener() {
 		
-		this.setNextListener(new ValueListener(NEXT_LEVEL));
-		this.getNextListener().addObserver(this);
-		this.getNextLevelPanel().getDocument().addDocumentListener(this.getNextListener());
+		this.setListener(new ValueListener(LEVEL));
+		this.getListener().addObserver(this);
+		this.getNextLevel().getDocument().addDocumentListener(this.getListener());
+		this.getCurrentLevel().getDocument().addDocumentListener(this.getListener());
 		
 	}
 	
@@ -193,10 +193,10 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		return currentLevel;
 	}
 
-	public LevelTextField getNextLevelPanel() {
+	public LevelTextField getNextLevel() {
 		return nextLevel;
 	}
-
+	
 	public Jobs getJobs() {
 		return jobs;
 	}
@@ -212,7 +212,7 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		int code = (Integer)arg;
 			
 		switch(code) {
-		case NEXT_LEVEL: this.changeOKButtonEnability();
+		case LEVEL: this.changeOKButtonEnability();
 		}
 	
 		
@@ -220,18 +220,18 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 	
 	/**
 	 * 
-	 * @return The ValueListener that will be used on the nextLevel Text Field
+	 * @return The ValueListener that will be used on the text fields
 	 */
-	public ValueListener getNextListener() {
-		return nextListener;
+	public ValueListener getListener() {
+		return this.listener;
 	}
 	
 	/**
 	 * 
-	 * @param nextListener the new ValueListener that will be used on the nextLevel Text Field
+	 * @param listener the new ValueListener that will be used on the text fields
 	 */
-	public void setNextListener(ValueListener nextListener) {
-		this.nextListener = nextListener;
+	public void setListener(ValueListener listener) {
+		this.listener = listener;
 	}
 	
    

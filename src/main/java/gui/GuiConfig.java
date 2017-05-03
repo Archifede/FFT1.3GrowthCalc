@@ -40,6 +40,8 @@ public final class GuiConfig {
 	public final int LABEL_SIZE;
 	public final String[] STATS;
 	public final Color PANEL_COLOR;
+
+	private int tabId;
 	
 	private GuiConfig() {
 		
@@ -154,5 +156,9 @@ public final class GuiConfig {
 		return label;
 	
 			
+	}
+
+	public String nextTabId() {
+		return "character"+String.valueOf(++this.tabId);
 	}
 }

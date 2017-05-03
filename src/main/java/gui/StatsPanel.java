@@ -11,6 +11,7 @@ import javax.swing.text.*;
 import data.Gender;
 import gui.components.OnlyNumbers;
 import gui.components.ValuesConstants;
+import logic.Stats;
 
 /**
  * This class represents a Stats Panel. This is where the value of the stats are going to be
@@ -27,8 +28,12 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 	private static final long serialVersionUID = 4795777516067075188L;
 	protected JTextField[] textFields;
 	protected String[] labels;
-
+	protected Stats stats;
+	
+	
 	StatsPanel(String ... labels) {
+		
+		this.stats = new Stats(new double[]{0,0,0,0,0});
 		
 		GuiConfig config = GuiConfig.getInstance();
 		
@@ -54,6 +59,20 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 	StatsPanel() {
 		
 		this(GuiConfig.getInstance().STATS);
+	}
+	
+	/**
+	 * change the stats on the GUI using the values in the Stats object
+	 */
+	void changeStats() {
+		
+		for(int i=0;i<this.textFields.length;i++) {
+			
+			int stat = (int) this.stats.getStats(i);
+			String textStat = String.valueOf(stat);
+			this.textFields[i].setText(textStat);
+		
+		}
 	}
 	
 	/**
@@ -90,11 +109,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 			document.setDocumentFilter(new OnlyNumbers(0,Integer.MAX_VALUE));
 		}
 		
-		this.textFields[HP].setText("0");
-		this.textFields[MP].setText("0");
-		this.textFields[SPEED].setText("0");
-		this.textFields[PHYSICAL_DAMAGE].setText("0");
-		this.textFields[MAGIC].setText("0");
+		this.changeStats();
 	}
 	
 	/**
@@ -141,7 +156,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 
 		InitialStatsPanel() {
 			
-			super("Raw HP","Raw MP");
+			super();
 			
 			this.textFields[SPEED].setEditable(false);
 			this.textFields[PHYSICAL_DAMAGE].setEditable(false);
@@ -186,8 +201,10 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 			
 			/* if a field has been modified:
 			 * then calculate the new stats */
-
-			case NEXT_LEVEL: this.computeNewStats();
+			
+			case GENDER:
+			case JOB:
+			case LEVEL: this.computeNewStats();
 			
 			}
 			
