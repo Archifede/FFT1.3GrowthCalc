@@ -1,7 +1,9 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.text.*;
@@ -28,9 +30,12 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 
 	StatsPanel(String ... labels) {
 		
-		this.labels = labels;
+		GuiConfig config = GuiConfig.getInstance();
 		
-		this.setLayout(GuiConfig.getInstance().INPUT_VALUE_LAYOUT);
+		this.labels = labels;
+		this.setBackground(config.PANEL_COLOR);
+		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.setLayout(new GridLayout(labels.length,2));
 		this.createTextFields();
 		this.addTextFieldsAndLabels();
 		
@@ -80,7 +85,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		for(int i=0;i<this.textFields.length;i++) {
 			
 			textFields[i] = new JTextField();
-			
+			textFields[i].setBackground(Color.WHITE);
 			PlainDocument document = (PlainDocument)textFields[i].getDocument();
 			document.setDocumentFilter(new OnlyNumbers(0,Integer.MAX_VALUE));
 		}
@@ -134,7 +139,9 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		 */
 		private static final long serialVersionUID = -4382171376215021988L;
 
-		public InitialStatsPanel() {
+		InitialStatsPanel() {
+			
+			super("Raw HP","Raw MP");
 			
 			this.textFields[SPEED].setEditable(false);
 			this.textFields[PHYSICAL_DAMAGE].setEditable(false);
@@ -145,6 +152,49 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		public void update(Observable o, Object arg) {
 			
 			
+			
+		}
+		
+	}
+	
+	/**
+	 * This class represents the final stats (at MAX_LEVEL) where the user can see the values
+	 * 
+	 * @author Only Brad
+	 *
+	 */
+	final static class FinalStatsPanel extends StatsPanel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -710997824047600320L;
+		
+		public FinalStatsPanel() {
+			
+			for(int i=0;i<this.textFields.length;i++)
+				
+				this.textFields[i].setEditable(false);
+		}
+		
+		@Override
+		public void update(Observable o, Object arg) {
+			
+			int code = (Integer)arg;
+			
+			switch(code){
+			
+			/* if a field has been modified:
+			 * then calculate the new stats */
+
+			case NEXT_LEVEL: this.computeNewStats();
+			
+			}
+			
+		}
+
+		private void computeNewStats() {
+			// TODO Auto-generated method stub
 			
 		}
 		

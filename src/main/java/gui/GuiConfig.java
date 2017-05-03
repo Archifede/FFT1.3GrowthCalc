@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Enumeration;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 
@@ -25,32 +26,34 @@ public final class GuiConfig {
 	
 	private final String LOOK_AND_FEEL;
 	private final String TITLE;
+	private final String TITLE_IMAGE;
 	private final String FONT_PATH;
+	private final String TITLE_IMAGE_PATH;
 	private final String TACTIC_FONT_NAME;
 	
 	public final Dimension FRAME_SIZE;
 	public final String RAMZA;
-	public final LayoutManager FRAME_LAYOUT;
-	public final LayoutManager INPUT_SELECTION_LAYOUT;
-	public final LayoutManager INPUT_VALUE_LAYOUT;
 	public final Font H1;
 	public final Font H2;
 	public final Font TACTIC_FONT;
 	public final int TITLE_SIZE;
 	public final int LABEL_SIZE;
 	public final String[] STATS;
+	public final Color PANEL_COLOR;
 	
 	private GuiConfig() {
 		
 		/* strings */
 		this.LOOK_AND_FEEL = UIManager.getSystemLookAndFeelClassName();
 		this.TITLE = "FFT 1.3 GrowthCalc";
-		this.TACTIC_FONT_NAME = "Final_Fantasy_Tactics.ttf";getClass();
+		this.TACTIC_FONT_NAME = "Final_Fantasy_Tactics.ttf";
 		this.STATS = new String[]{"HP","MP","Speed","Physical Damage","Magic"};
+		this.TITLE_IMAGE = "Final_Fantasy_Tactics_Logo.jpg";
 		
 		/* path strings */
-		this.RAMZA = Paths.get(new File("").getAbsolutePath(),"ico","ramza.png").toString();
+		this.RAMZA = Paths.get(new File("").getAbsolutePath(),"img","ramza.png").toString();
 		this.FONT_PATH = Paths.get(new File("").getAbsolutePath(),"font").toString();
+		this.TITLE_IMAGE_PATH = Paths.get(new File("").getAbsolutePath(),"img",this.TITLE_IMAGE).toString();
 		
 		/* values */
 		this.TITLE_SIZE = 50;
@@ -59,19 +62,17 @@ public final class GuiConfig {
 		/* fonts */
 		this.H1 = this.h1();
 		this.H2 = this.h2();
-		this.TACTIC_FONT = generateTacticFont();
-		
-		/* layouts */
-		this.FRAME_LAYOUT = new BorderLayout();
-		this.INPUT_SELECTION_LAYOUT = new FlowLayout();
-		this.INPUT_VALUE_LAYOUT = new GridLayout(0,2);
-		
+		this.TACTIC_FONT = generateTacticFont(this.LABEL_SIZE);
+				
 		/* dimensions */
 		this.FRAME_SIZE = new Dimension(1024,768);
 		
+		/* colors */
+		this.PANEL_COLOR = Color.WHITE;
+		
 	}
 	
-	private Font generateTacticFont() {
+	private Font generateTacticFont(float size) {
 		
 		String path = Paths.get(
 				this.FONT_PATH,this.TACTIC_FONT_NAME
@@ -138,14 +139,20 @@ public final class GuiConfig {
 	
 	/**
 	 * 
-	 * @return The JLabel title of the app
+	 * @return The Panel title of the app
 	 */
 	public JLabel getTitle() {
 		
-		JLabel title = new JLabel(this.TITLE);
-		title.setFont(this.TACTIC_FONT);
-		title.setHorizontalAlignment(JLabel.CENTER);
-		return title;
+		ImageIcon imageIcon = null;
+		try {
+			imageIcon = new ImageIcon(ImageIO.read(new File(this.TITLE_IMAGE_PATH)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JLabel label = new JLabel(imageIcon);
+		return label;
+	
+			
 	}
-
 }

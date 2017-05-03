@@ -14,6 +14,17 @@ import javax.swing.event.DocumentListener;
  *
  */
 public final class ValueListener extends Observable implements DocumentListener {
+	
+	private int code;
+
+	/**
+	 * 
+	 * @param code The type of text field to which this listener is attached to
+	 */
+	public ValueListener(int code) {
+		
+		this.code = code;
+	}
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
@@ -40,7 +51,7 @@ public final class ValueListener extends Observable implements DocumentListener 
 	private void changed() {
 		
 		this.setChanged();
-		this.notifyObservers();
+		this.notifyObservers(code);
 	}
 
 }

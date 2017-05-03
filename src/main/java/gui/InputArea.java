@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.Observable;
@@ -12,10 +13,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import data.Params;
+import gui.components.ButtonContants;
 import gui.components.ComboBoxInput;
 import gui.components.ComboBoxInput.Jobs;
+import gui.listeners.ButtonListener;
 import gui.listeners.ValueListener;
 import gui.components.LevelTextField;
+import gui.components.ValuesConstants;
 
 /**
  * This class represents one entry in the DynamicInputPanel. Every time a new entry is needed,
@@ -31,7 +35,7 @@ import gui.components.LevelTextField;
  * @author Only Brad
  *
  */
-final class InputArea extends JPanel implements Observer {
+final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonContants {
 
 	/**
 	 * 
@@ -42,12 +46,16 @@ final class InputArea extends JPanel implements Observer {
 	private LevelTextField nextLevel;
 	private Jobs jobs;
 	private JButton ok;
+	private ValueListener currentListener;
+	private ValueListener nextListener;
 	
 	/**
 	 * 
 	 * @param minLevel the minLevel allowed
 	 */
 	InputArea(int minLevel) {
+		
+		GuiConfig config = GuiConfig.getInstance();
 		
 		GridLayout thisGridLayout = new GridLayout(2,0); // layout of the InputArea
 		GridLayout levelGridLayout = new GridLayout(2,2); // layout of the level panels
@@ -58,6 +66,7 @@ final class InputArea extends JPanel implements Observer {
 		
 		this.setLayout(thisGridLayout);
 		JPanel levelPanel = new JPanel(levelGridLayout);
+		levelPanel.setBackground(config.PANEL_COLOR);
 		
 		/* Create the current level panel row */
 		this.addCurrentLevelRow(labelLayout,textLayout,minLevel,levelPanel);
@@ -70,18 +79,17 @@ final class InputArea extends JPanel implements Observer {
 		/*add everything to the InputArea*/
 		this.add(levelPanel);
 		JPanel jobPanel = new JPanel(labelLayout);
+		jobPanel.setBackground(config.PANEL_COLOR);
 		JPanel jobAndButtonPanel = new JPanel(new GridLayout(2,1));
+		jobAndButtonPanel.setBackground(config.PANEL_COLOR);
 		jobAndButtonPanel.add(jobPanel);
 		jobAndButtonPanel.add(this.ok = new JButton("OK"));
 		jobPanel.add(this.jobs = new ComboBoxInput.Jobs());
 		this.add(jobAndButtonPanel);
+		
+		this.setBackground(config.PANEL_COLOR);
+		this.addValueListener();
 	
-		/* add a listener to the "nextLevel" text field to verify the condition nextLevel > currentLevel
-		 * whenever a new value is entered in nextLevel, the listener will notify this panel of it
-		 */
-		ValueListener valueListener = new ValueListener();
-		valueListener.addObserver(this);
-		this.nextLevel.getDocument().addDocumentListener(valueListener);
 	}
 	
 	/**
@@ -94,10 +102,15 @@ final class InputArea extends JPanel implements Observer {
 	 */
 	private void addCurrentLevelRow(FlowLayout labelLayout, FlowLayout textLayout, int minLevel, JPanel levelPanel) {
 		
-		JPanel labelPanel = new JPanel(labelLayout);
-		JPanel textPanel = new JPanel(textLayout);
+		GuiConfig config = GuiConfig.getInstance();
+		
+		JPanel labelPanel = new JPanel(labelLayout); //label container
+		labelPanel.setBackground(config.PANEL_COLOR);
+		JPanel textPanel = new JPanel(textLayout); //text field container
+		textPanel.setBackground(config.PANEL_COLOR);
 		labelPanel.add(new JLabel("Current Level"));
 		textPanel.add(this.currentLevel = new LevelTextField(Params.STARTING_LEVEL,Params.MAX_LEVEL));
+		this.currentLevel.setBackground(config.PANEL_COLOR);
 		this.currentLevel.setText(String.valueOf(minLevel));
 		this.currentLevel.setColumns(2);
 		this.currentLevel.setEditable(false);
@@ -115,14 +128,66 @@ final class InputArea extends JPanel implements Observer {
 	 */
 	private void addNextLevelRow(FlowLayout labelLayout, FlowLayout textLayout, int minLevel, JPanel levelPanel) {
 		
-		JPanel labelPanel = new JPanel(labelLayout);
-		JPanel textPanel = new JPanel(textLayout);
+		GuiConfig config = GuiConfig.getInstance();
+		
+		JPanel labelPanel = new JPanel(labelLayout); //label container
+		labelPanel.setBackground(config.PANEL_COLOR);
+		JPanel textPanel = new JPanel(textLayout); //text field container
+		textPanel.setBackground(config.PANEL_COLOR);
 		labelPanel.add(new JLabel("Next Level"));
-		textPanel.add(this.nextLevel= new LevelTextField(Params.STARTING_LEVEL,Params.MAX_LEVEL)); 
+		textPanel.add(this.nextLevel= new LevelTextField(Params.STARTING_LEVEL,Params.MAX_LEVEL));
 		this.nextLevel.setColumns(2);
 		levelPanel.add(labelPanel);
 		levelPanel.add(textPanel);
 	}
+	
+	/**
+	 * change the enability of the OK button depending 
+	 * on the values of currentLevel and nextLevel
+	 */
+	private void changeOKButtonEnability() {
+		
+		int currentLevel = 0;
+		int nextLevel = 0;
+
+		/* verify if there are values other than numbers inside the text field 
+		 * (happens when deleted or replacing a value)
+		 */
+		
+		if(this.nextLevel.getText().equals("")) {
+		
+			this.ok.setEnabled(false);
+			return;
+		}
+		
+		/* verify if currentLevel > nextLevel, if yes then desactivate the "OK" button 
+		 * otherwise activate it
+		 * */
+		currentLevel = Integer.parseInt(this.currentLevel.getText());
+		nextLevel = Integer.parseInt(this.nextLevel.getText());
+		
+		if(currentLevel >= nextLevel)
+			
+			this.ok.setEnabled(false);
+		
+		else
+			this.ok.setEnabled(true);
+		
+	}
+	
+	/** add a listener to the "nextLevel" text field of this object 
+	* to verify the condition nextLevel > currentLevel
+    * whenever a new value is entered in nextLevel, 
+    * the listener will notify this object
+	*/
+	private void addValueListener() {
+		
+		this.setNextListener(new ValueListener(NEXT_LEVEL));
+		this.getNextListener().addObserver(this);
+		this.getNextLevelPanel().getDocument().addDocumentListener(this.getNextListener());
+		
+	}
+	
 	
 	public LevelTextField getCurrentLevel() {
 		return currentLevel;
@@ -143,38 +208,31 @@ final class InputArea extends JPanel implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		
-	
-		/* if the observable is a ValueListener, 
-		 * then the value of nextLevel has been changed */
-		if(o instanceof ValueListener) {
-		
-			int currentLevel = 0;
-			int nextLevel = 0;
-	
-			/* verify if there are values other than numbers inside the text field 
-			 * (happens when deleted or replacing a value)
-			 */
+		/* look at what triggered the update method */
+		int code = (Integer)arg;
 			
-			if(this.nextLevel.getText().equals(""))
-				
-				return;
-			
-			/* verify if currentLevel > nextLevel, if yes then desactivate the "OK" button 
-			 * otherwise activate it
-			 * */
-			currentLevel = Integer.parseInt(this.currentLevel.getText());
-			nextLevel = Integer.parseInt(this.nextLevel.getText());
-			
-			if(currentLevel > nextLevel)
-				
-				this.ok.setEnabled(false);
-			
-			else
-				this.ok.setEnabled(true);
-			
+		switch(code) {
+		case NEXT_LEVEL: this.changeOKButtonEnability();
 		}
+	
 		
 	}
-
 	
+	/**
+	 * 
+	 * @return The ValueListener that will be used on the nextLevel Text Field
+	 */
+	public ValueListener getNextListener() {
+		return nextListener;
+	}
+	
+	/**
+	 * 
+	 * @param nextListener the new ValueListener that will be used on the nextLevel Text Field
+	 */
+	public void setNextListener(ValueListener nextListener) {
+		this.nextListener = nextListener;
+	}
+	
+   
 }
