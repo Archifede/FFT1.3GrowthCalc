@@ -1,5 +1,6 @@
 package logic;
 
+import data.Job;
 import gui.components.ValuesConstants;
 
 /**
@@ -28,13 +29,20 @@ public class Stats implements ValuesConstants {
 	 * 
 	 * @param currentLevel the current level
 	 * @param nextLevel this next level
-	 * @param c No idea why this is called "c", ask Archifede
+	 * @param Job the current job
 	 */
-	public void computeStat(int currentLevel, int nextLevel, int c) {
+	public void computeStat(int currentLevel, int nextLevel, Job job) {
+		
+		int[] c = new int[5]; //c No idea why this is called "c", ask Archifede
+		c[0] = job.getHpC();
+		c[1] = job.getMpC();
+		c[2] = job.getSpC();
+		c[3] = job.getPaC();
+		c[4] = job.getMaC();
 		
 		for(int i=0;i<stats.length;i++)
 			
-			this.stats[i] = Calculus.computeStat(this.stats[i],currentLevel,nextLevel,c);
+			this.stats[i] = Calculus.computeStat(this.stats[i],currentLevel,nextLevel,c[i]);
 	}
 	
 	/**

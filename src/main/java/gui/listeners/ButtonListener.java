@@ -17,7 +17,11 @@ import java.awt.event.ActionListener;
 public class ButtonListener extends Observable implements ActionListener,ButtonContants {
 		
 	private int code;
-
+	
+	/**
+	 * 
+	 * @param code what type of button was clicked (use ButtonConstants)
+	 */
 	public ButtonListener(int code) {
 		
 		this.code = code;

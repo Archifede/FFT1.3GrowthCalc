@@ -24,6 +24,16 @@ class CharacterStatsPanel extends JPanel {
 	private String name;
 	private final FinalStatsPanel output;
 	
+	/**
+	 * 
+	 * The primary panel of the program. Each character has one CharacterStatsPanel. To create a new CharacterStatsPanel,
+	 * you can click in the Menu, then "file", then "new" : a new tab with an instance of this class will be created.
+	 * This class contains all the inputs necessary for the calculation of the stats. First the user must
+	 * 
+	 * 
+	 * 
+	 * @param name the name of the panel, can be used for the tab name in a JTabbedPane.
+	 */
 	CharacterStatsPanel(String name) {
 		
 		this.name = name;
@@ -35,7 +45,8 @@ class CharacterStatsPanel extends JPanel {
 		/* put the both input panels (static and dynamic) in one panel, North and South respectively */
 		JPanel inputPanel = new JPanel();
 		inputPanel.setLayout(new BorderLayout());
-		inputPanel.add(new StaticInputPanel(),BorderLayout.NORTH);
+		StaticInputPanel staticInput = new StaticInputPanel();
+		inputPanel.add(staticInput,BorderLayout.NORTH);
 		inputPanel.add(new DynamicInputPanel(),BorderLayout.CENTER);
 		
 		/* create the output panel and insert the FinalStatsPanel in it */
@@ -50,28 +61,34 @@ class CharacterStatsPanel extends JPanel {
 	}
 	
 	/**
-	 * Method called when a new inputArea was added in this frame, the output will
-	 * be added as an observer to the documentlistener of newly created inputArea
+	 * Method called when a new inputArea was added in this panel, the output will
+	 * be added as an observer to the documentlistener of newly created inputArea.
+	 * Because of how the DynamicInputPanel adds its InputArea, the older InputArea
+	 * are disactivated : the output will still observe them but they will never
+	 * notify their observers because they will never change. In user terms: The panel
+	 * that lets you choose job and levels cannot be modified again therefore the final stats
+	 * will no longer be notified of any changes because there will never be any changes; they are
+	 * disactivated once a newer panel is created.
 	 * 
-	 * @param inputArea
+	 * @param inputArea the newly created inputArea that needs to be observed by the output
 	 */
 	void updateOutput(InputArea inputArea) {
 		
-		inputArea.getListener().addObserver(this.output);
+		inputArea.getTextListener().addObserver(this.output);
 		
 	}
 	
-	public FinalStatsPanel getOutput() {
+	FinalStatsPanel getOutput() {
 		
 		return this.output;
 	}
 	
-	public String getName() {
+	String getPanelName() {
 		
 		return this.name;
 	}
 	
-	public void setName(String name) {
+	void setPanelName(String name) {
 		
 		this.name = name;
 	}

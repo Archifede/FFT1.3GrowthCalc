@@ -19,5 +19,6 @@ class TacticFileMenu extends JMenu {
 		
 		super("File");
 		this.add(new NewCharacterMenuItem());
+		this.add(new ExitMenuItem());
 	}
 }

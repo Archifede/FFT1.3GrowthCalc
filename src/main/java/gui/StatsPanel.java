@@ -2,20 +2,24 @@ package gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
 import data.Gender;
+import data.Job;
+import gui.components.ComboBoxInput.Genders;
+import gui.components.ComboBoxInput.Jobs;
+import gui.components.LevelTextField;
 import gui.components.OnlyNumbers;
 import gui.components.ValuesConstants;
+import gui.listeners.ValueListener;
 import logic.Stats;
 
 /**
  * This class represents a Stats Panel. This is where the value of the stats are going to be
- * shown and some of them can be modified.
+ * shown and some of them can be modified depending on the situation.
  * 
  * @author Only Brad
  *
@@ -43,16 +47,6 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		this.setLayout(new GridLayout(labels.length,2));
 		this.createTextFields();
 		this.addTextFieldsAndLabels();
-		
-		
-		/* double the width of this panel, only works in a FlowLayout */
-		this.setPreferredSize( new Dimension(
-				
-				(int)this.getPreferredSize().getWidth()*2,
-				(int)this.getPreferredSize().getHeight()
-				
-				) 		
-		);
 
 	}
 	
@@ -76,23 +70,20 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 	}
 	
 	/**
-	 * generate values of the JTextFields, this should be called only once this panel is inside another container,
-	 * otherise this.getTopLevelAncestor will return null. This method should be called everytime a
-	 * JComboBox value associated with the InputValuesPanel is changed.
+	 * Generate a ValueListener inside all the text field then return the generated ValueListener
+	 * 
+	 * @return the ValueListener that was added in all the textfields
 	 */
-	/*void generateValues() {
+	ValueListener addValueListener() {
 		
-		FrameApp frame = (FrameApp) this.getTopLevelAncestor();
-		InputSelectionPanel panel = frame.getInputSelection();
+		ValueListener listener = new ValueListener(STAT);
 		
-		Gender currentGender = Gender.valueOf(Gender.class,
-				((String)panel.getGenders().getSelectedItem()).toUpperCase());
+		for(int i=0;i<this.textFields.length;i++)
+			
+			this.textFields[i].getDocument().addDocumentListener(listener);
 		
-		this.textFields[SPEED].setText(String.valueOf( (int)currentGender.getRawSpeed()));
-		this.textFields[PHYSICAL_DAMAGE].setText(String.valueOf( (int)currentGender.getRawPa()));
-		this.textFields[MAGIC].setText(String.valueOf( (int)currentGender.getRawMa()));
-		
-	}*/
+		return listener;
+	}
 
 	/**
 	 * Generate the JTextFields and store them inside an array
@@ -113,15 +104,25 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 	}
 	
 	/**
+	 * Change the JTextFields by using the values stored in the Stats object
+	 */
+	protected void changeTextFields() {
+		
+		for(int i=0;i<this.textFields.length;i++)
+			
+			this.textFields[i].setText(String.valueOf(this.stats.getStats(i)));
+	}
+	
+	/**
 	 * Add the JTextFields and the JLabel into the JPanel
 	 */
-	private void addTextFieldsAndLabels() {
+	protected void addTextFieldsAndLabels() {
 		
 		for(int i=0;i<labels.length;i++) {
 			
 			JLabel label = new JLabel(this.labels[i]);
 			label.setFont(GuiConfig.getInstance().H2);
-			label.setHorizontalAlignment(JLabel.CENTER);
+			label.setHorizontalAlignment(JLabel.LEFT);
 			this.add(label);
 			this.add(this.textFields[i]);
 			
@@ -134,7 +135,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 	 * @param index The specific JTextField (use ValuesConstances constants)
 	 * @return the JTextField specified by the index
 	 */
-	public JTextField getField(int index) {
+	JTextField getField(int index) {
 		
 		return this.textFields[index];
 	}
@@ -156,19 +157,11 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 
 		InitialStatsPanel() {
 			
-			super();
-			
-			this.textFields[SPEED].setEditable(false);
-			this.textFields[PHYSICAL_DAMAGE].setEditable(false);
-			this.textFields[MAGIC].setEditable(false);
+			super(GuiConfig.getInstance().RAW_STATS);
 		}
 		
 		@Override
-		public void update(Observable o, Object arg) {
-			
-			
-			
-		}
+		public void update(Observable o, Object arg) {}
 		
 	}
 	
@@ -185,7 +178,14 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		 */
 		private static final long serialVersionUID = -710997824047600320L;
 		
-		public FinalStatsPanel() {
+		Genders genders;
+		Jobs jobs;
+		LevelTextField currentLevel;
+		LevelTextField nextLevel;
+		
+		FinalStatsPanel() {
+			
+			super(GuiConfig.getInstance().FINAL_STATS);
 			
 			for(int i=0;i<this.textFields.length;i++)
 				
@@ -202,8 +202,8 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 			/* if a field has been modified:
 			 * then calculate the new stats */
 			
-			case GENDER:
 			case JOB:
+			case STAT:
 			case LEVEL: this.computeNewStats();
 			
 			}
@@ -211,8 +211,14 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		}
 
 		private void computeNewStats() {
-			// TODO Auto-generated method stub
 			
+			Job currentJob = Job.valueOf(Job.class,
+					((String)this.jobs.getSelectedItem()).toUpperCase());
+					
+			int currentLevel = Integer.parseInt(this.currentLevel.getText());
+			int nextLevel = Integer.parseInt(this.nextLevel.getText());
+			this.stats.computeStat(currentLevel, nextLevel, currentJob);
+			this.changeStats();
 		}
 		
 	}

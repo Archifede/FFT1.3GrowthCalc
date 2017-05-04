@@ -17,6 +17,7 @@ import gui.components.ButtonContants;
 import gui.components.ComboBoxInput;
 import gui.components.ComboBoxInput.Jobs;
 import gui.listeners.ButtonListener;
+import gui.listeners.ComboBoxListener;
 import gui.listeners.ValueListener;
 import gui.components.LevelTextField;
 import gui.components.ValuesConstants;
@@ -46,7 +47,8 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 	private LevelTextField nextLevel;
 	private Jobs jobs;
 	private JButton ok;
-	private ValueListener listener;
+	private ValueListener textListener;
+	private ComboBoxListener jobListener;
 	
 	/**
 	 * 
@@ -87,7 +89,7 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		this.add(jobAndButtonPanel);
 		
 		this.setBackground(config.PANEL_COLOR);
-		this.addValueListener();
+		this.addListeners();
 	
 	}
 	
@@ -177,33 +179,60 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 	/** add a listener to the "next level" and "current level" text field of this object 
 	* to verify the condition nextLevel > currentLevel
     * whenever a new value is entered in nextLevel, 
-    * the listener will notify this object
+    * the listener will notify this object. Then add a listener to the job combo box.
 	*/
-	private void addValueListener() {
+	private void addListeners() {
 		
-		this.setListener(new ValueListener(LEVEL));
-		this.getListener().addObserver(this);
-		this.getNextLevel().getDocument().addDocumentListener(this.getListener());
-		this.getCurrentLevel().getDocument().addDocumentListener(this.getListener());
+		this.setTextListener(new ValueListener(LEVEL));
+		this.getTextListener().addObserver(this);
+		this.getNextLevel().getDocument().addDocumentListener(this.getTextListener());
+		this.getCurrentLevel().getDocument().addDocumentListener(this.getTextListener());
+		
+		this.jobs.addItemListener(this.jobListener = new ComboBoxListener(JOB));
 		
 	}
 	
+	public ComboBoxListener getJobListener() {
+		return this.jobListener;
+	}
+
+	public void setJobListener(ComboBoxListener jobListener) {
+		this.jobListener = jobListener;
+	}
 	
-	public LevelTextField getCurrentLevel() {
+	
+	LevelTextField getCurrentLevel() {
 		return currentLevel;
 	}
 
-	public LevelTextField getNextLevel() {
+	LevelTextField getNextLevel() {
 		return nextLevel;
 	}
 	
-	public Jobs getJobs() {
+	Jobs getJobs() {
 		return jobs;
 	}
 
-	public JButton getOkButton() {
+	JButton getOkButton() {
 		return ok;
 	}
+	
+	/**
+	 * 
+	 * @param listener the new ValueListener that will be used on the text fields
+	 */
+	void setTextListener(ValueListener listener) {
+		this.textListener = listener;
+	}
+
+	/**
+	 * 
+	 * @return The ValueListener that will be used on the text fields
+	 */
+	ValueListener getTextListener() {
+		return this.textListener;
+	}
+	
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -214,25 +243,10 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		switch(code) {
 		case LEVEL: this.changeOKButtonEnability();
 		}
-	
 		
 	}
-	
-	/**
-	 * 
-	 * @return The ValueListener that will be used on the text fields
-	 */
-	public ValueListener getListener() {
-		return this.listener;
-	}
-	
-	/**
-	 * 
-	 * @param listener the new ValueListener that will be used on the text fields
-	 */
-	public void setListener(ValueListener listener) {
-		this.listener = listener;
-	}
-	
+
+
+
    
 }

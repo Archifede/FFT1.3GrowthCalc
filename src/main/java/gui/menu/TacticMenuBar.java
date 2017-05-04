@@ -19,5 +19,6 @@ public class TacticMenuBar extends JMenuBar {
 	public TacticMenuBar() {
 		
 		this.add(new TacticFileMenu());
+		this.add(new TacticHelpMenu());
 	}
 }

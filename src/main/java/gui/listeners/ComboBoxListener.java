@@ -13,12 +13,23 @@ import java.util.Observable;
  *
  */
 public class ComboBoxListener extends Observable implements ItemListener {
-
+	
+	private int code;
+	
+	/**
+	 * 
+	 * @param code where did that change come from (use ValueConstants)
+	 */
+	public ComboBoxListener(int code) {
+		
+		this.code = code;
+	}
+	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		
 		this.setChanged();
-		this.notifyObservers();
+		this.notifyObservers(code);
 
 	}
 

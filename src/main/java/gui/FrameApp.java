@@ -27,6 +27,7 @@ public final class FrameApp extends JFrame{
 		
 		GuiConfig config = GuiConfig.getInstance();
 		
+		this.setTitle("Final Fantasy Tactic 1.3 Growth Calculator");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(config.FRAME_SIZE);
 		this.setIcon();	
@@ -56,7 +57,7 @@ public final class FrameApp extends JFrame{
 		GuiConfig config = GuiConfig.getInstance();
 		
 		CharacterStatsPanel newPanel = new CharacterStatsPanel(config.nextTabId());
-		tab.add(newPanel.getName(), newPanel);
+		tab.add(newPanel.getPanelName(), newPanel);
 	}
 	
 }

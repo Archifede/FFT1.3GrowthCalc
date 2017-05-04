@@ -8,6 +8,7 @@ import java.util.Enumeration;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.FontUIResource;
 
 
@@ -38,18 +39,22 @@ public final class GuiConfig {
 	public final Font TACTIC_FONT;
 	public final int TITLE_SIZE;
 	public final int LABEL_SIZE;
+	public final String[] RAW_STATS;
+	public final String[] FINAL_STATS;
 	public final String[] STATS;
 	public final Color PANEL_COLOR;
 
 	private int tabId;
-	
+
 	private GuiConfig() {
 		
 		/* strings */
 		this.LOOK_AND_FEEL = UIManager.getSystemLookAndFeelClassName();
 		this.TITLE = "FFT 1.3 GrowthCalc";
 		this.TACTIC_FONT_NAME = "Final_Fantasy_Tactics.ttf";
-		this.STATS = new String[]{"HP","MP","Speed","Physical Damage","Magic"};
+		this.RAW_STATS = new String[]{"Raw HP","Raw MP","Raw Speed","Raw Physical","Raw Magic"};
+		this.FINAL_STATS = new String[]{"Final HP","Final MP","Final Speed","Final Physical","Final Magic"};
+		this.STATS = new String[]{"HP","MP","Speed","Physical","Magic"};
 		this.TITLE_IMAGE = "Final_Fantasy_Tactics_Logo.jpg";
 		
 		/* path strings */
@@ -72,6 +77,10 @@ public final class GuiConfig {
 		/* colors */
 		this.PANEL_COLOR = Color.WHITE;
 		
+		/* Global changes of the UI */
+		UIManager.put("OptionPane.background",new ColorUIResource(this.PANEL_COLOR));
+		UIManager.put("Panel.background", new ColorUIResource(Color.WHITE));
+
 	}
 	
 	private Font generateTacticFont(float size) {
