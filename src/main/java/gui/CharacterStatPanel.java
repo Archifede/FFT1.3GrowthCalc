@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 import gui.StatsPanel.FinalStatsPanel;
+import gui.components.ButtonConstants;
 
 /**
  * 
@@ -14,7 +15,7 @@ import gui.StatsPanel.FinalStatsPanel;
  * @author Only Brad
  *
  */
-class CharacterStatsPanel extends JPanel {
+class CharacterStatsPanel extends JPanel implements ButtonConstants {
 
 	/**
 	 * 
@@ -23,14 +24,21 @@ class CharacterStatsPanel extends JPanel {
 	
 	private String name;
 	private final FinalStatsPanel output;
+	private final StaticInputPanel staticInput;
+	private final DynamicInputPanel dynamicInput;
 	
 	/**
 	 * 
-	 * The primary panel of the program. Each character has one CharacterStatsPanel. To create a new CharacterStatsPanel,
-	 * you can click in the Menu, then "file", then "new" : a new tab with an instance of this class will be created.
-	 * This class contains all the inputs necessary for the calculation of the stats. First the user must
+	 * The primary panel of the program. Each character has one CharacterStatsPanel associated to it.  
+	 * To create a new CharacterStatsPanel, you can click in the Menu, then "file", then "new" : a new 
+	 * tab with an instance of this class will be created.This class contains all the inputs necessary for 
+	 * the calculation of the stats. First the user must Select a gender and specify the initial values then
+	 * press on the "OK" button. This will disable on inputs in the StaticInputPanel then create the first 
+	 * InputArea (where the user can enter the levels and the job) in the DynamicInputPanel.
 	 * 
-	 * 
+	 * Every time a value inside an InputArea is modified, the output will automatically updated the new stats.
+	 * Clicking on "OK" in the an InputArea will create another one. The "OK" button is desactivated if
+	 * the current level and next level don't respect the condition current level < next level.
 	 * 
 	 * @param name the name of the panel, can be used for the tab name in a JTabbedPane.
 	 */
@@ -45,9 +53,9 @@ class CharacterStatsPanel extends JPanel {
 		/* put the both input panels (static and dynamic) in one panel, North and South respectively */
 		JPanel inputPanel = new JPanel();
 		inputPanel.setLayout(new BorderLayout());
-		StaticInputPanel staticInput = new StaticInputPanel();
-		inputPanel.add(staticInput,BorderLayout.NORTH);
-		inputPanel.add(new DynamicInputPanel(),BorderLayout.CENTER);
+
+		inputPanel.add(this.staticInput = new StaticInputPanel(),BorderLayout.NORTH);
+		inputPanel.add(this.dynamicInput = new DynamicInputPanel(),BorderLayout.CENTER);
 		
 		/* create the output panel and insert the FinalStatsPanel in it */
 		JPanel outputPanel = new JPanel();
@@ -58,6 +66,9 @@ class CharacterStatsPanel extends JPanel {
 		this.add(config.getTitle(),BorderLayout.NORTH);
 		this.add(inputPanel,BorderLayout.CENTER);
 		this.add(outputPanel,BorderLayout.SOUTH);
+		
+		/* attach the ok button of the StaticInputArea with the output */
+		this.staticInput.attachOkToOutput();
 	}
 	
 	/**
@@ -70,6 +81,7 @@ class CharacterStatsPanel extends JPanel {
 	 * will no longer be notified of any changes because there will never be any changes; they are
 	 * disactivated once a newer panel is created.
 	 * 
+	 * 
 	 * @param inputArea the newly created inputArea that needs to be observed by the output
 	 */
 	void updateOutput(InputArea inputArea) {
@@ -81,6 +93,16 @@ class CharacterStatsPanel extends JPanel {
 	FinalStatsPanel getOutput() {
 		
 		return this.output;
+	}
+	
+	StaticInputPanel getStaticInputPanel() {
+		
+		return this.staticInput;
+	}
+	
+	DynamicInputPanel getDynamicInputPanel() {
+		
+		return this.dynamicInput;
 	}
 	
 	String getPanelName() {

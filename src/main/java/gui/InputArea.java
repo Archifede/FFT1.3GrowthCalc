@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.Observable;
@@ -12,11 +11,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import data.Job;
 import data.Params;
-import gui.components.ButtonContants;
+import gui.components.ButtonConstants;
 import gui.components.ComboBoxInput;
 import gui.components.ComboBoxInput.Jobs;
-import gui.listeners.ButtonListener;
 import gui.listeners.ComboBoxListener;
 import gui.listeners.ValueListener;
 import gui.components.LevelTextField;
@@ -36,7 +35,7 @@ import gui.components.ValuesConstants;
  * @author Only Brad
  *
  */
-final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonContants {
+final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonConstants {
 
 	/**
 	 * 
@@ -209,8 +208,18 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		return nextLevel;
 	}
 	
+	/**
+	 * 
+	 * @return the Job enum selected
+	 */
+	Job getJob() {
+		
+		return Job.valueOf(((String) this.jobs.getSelectedItem()).toUpperCase());
+	}
+	
 	Jobs getJobs() {
-		return jobs;
+		
+		return this.jobs;
 	}
 
 	JButton getOkButton() {

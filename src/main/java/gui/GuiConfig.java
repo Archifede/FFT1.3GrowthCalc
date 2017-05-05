@@ -4,12 +4,9 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Enumeration;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.ColorUIResource;
-import javax.swing.plaf.FontUIResource;
 
 
 /**
@@ -26,12 +23,12 @@ public final class GuiConfig {
 	private static GuiConfig instance = new GuiConfig(); //Singleton
 	
 	private final String LOOK_AND_FEEL;
-	private final String TITLE;
 	private final String TITLE_IMAGE;
 	private final String FONT_PATH;
 	private final String TITLE_IMAGE_PATH;
 	private final String TACTIC_FONT_NAME;
 	
+	public final String TITLE;
 	public final Dimension FRAME_SIZE;
 	public final String RAMZA;
 	public final Font H1;
@@ -50,7 +47,7 @@ public final class GuiConfig {
 		
 		/* strings */
 		this.LOOK_AND_FEEL = UIManager.getSystemLookAndFeelClassName();
-		this.TITLE = "FFT 1.3 GrowthCalc";
+		this.TITLE = "Final Fantasy Tactic 1.3 Growth Calculator";
 		this.TACTIC_FONT_NAME = "Final_Fantasy_Tactics.ttf";
 		this.RAW_STATS = new String[]{"Raw HP","Raw MP","Raw Speed","Raw Physical","Raw Magic"};
 		this.FINAL_STATS = new String[]{"Final HP","Final MP","Final Speed","Final Physical","Final Magic"};

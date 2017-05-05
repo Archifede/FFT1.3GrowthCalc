@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.*;
 import javax.swing.*;
@@ -9,8 +8,7 @@ import javax.swing.text.*;
 
 import data.Gender;
 import data.Job;
-import gui.components.ComboBoxInput.Genders;
-import gui.components.ComboBoxInput.Jobs;
+import gui.components.ButtonConstants;
 import gui.components.LevelTextField;
 import gui.components.OnlyNumbers;
 import gui.components.ValuesConstants;
@@ -24,7 +22,7 @@ import logic.Stats;
  * @author Only Brad
  *
  */
-abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
+abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConstants,Observer {
 
 	/**
 	 * 
@@ -50,7 +48,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 
 	}
 	
-	StatsPanel() {
+	StatsPanel(JPanel parent) {
 		
 		this(GuiConfig.getInstance().STATS);
 	}
@@ -102,6 +100,19 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		
 		this.changeStats();
 	}
+	
+	/**
+	 * Set all the JTextFields of this object editable property to bool
+	 * 
+	 * @param bool the editable property value of the JTextFields 
+	 */
+	public void setEditable(boolean bool) {
+		
+		for(JTextField textField : this.textFields)
+			
+			textField.setEditable(bool);
+	}
+	
 	
 	/**
 	 * Change the JTextFields by using the values stored in the Stats object
@@ -161,7 +172,47 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		}
 		
 		@Override
-		public void update(Observable o, Object arg) {}
+		public void update(Observable o, Object arg) {
+			
+			int code = (Integer)arg;
+			
+			switch(code){
+			
+			/* if a field has been modified:
+			 * then calculate the new stats */
+			
+			case GENDER: this.computeRawStats();
+			
+			}
+		}
+		
+		/**
+		 * Raw stats will change when changing the gender. Every time the Gender value is changed in the GUI
+		 * compute the new Raw Stats. Extract the Gender from the StaticInputPanel of the CharacterStatPanel parent.
+		 */
+		private void computeRawStats() {
+			
+			StaticInputPanel staticInput = (StaticInputPanel) this.getParent();
+			Gender gender = staticInput.getGender();
+			
+			this.compute(gender);
+		}
+		
+		/**
+		 * Generate the new raw stats using the Gender
+		 * The max values of HP and MP will be automatically generated
+		 */
+		private void compute(Gender gender) {
+			
+			double hp = gender.getRawHps()[1];
+			double mp = gender.getRawMps()[1];
+			double sp = gender.getRawSpeed();
+			double pa = gender.getRawPa();
+			double ma = gender.getRawMa();
+			
+			this.stats.setStats(new double[]{hp,mp,sp,pa,ma});
+			this.changeStats();
+		}
 		
 	}
 	
@@ -178,18 +229,24 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 		 */
 		private static final long serialVersionUID = -710997824047600320L;
 		
-		Genders genders;
-		Jobs jobs;
+		Gender gender;
+		Job job;
 		LevelTextField currentLevel;
 		LevelTextField nextLevel;
+		Stats statsBuffer;
 		
+		/**
+		 * Disable all fields
+		 */
 		FinalStatsPanel() {
 			
 			super(GuiConfig.getInstance().FINAL_STATS);
-			
+									
 			for(int i=0;i<this.textFields.length;i++)
 				
 				this.textFields[i].setEditable(false);
+			
+			
 		}
 		
 		@Override
@@ -204,21 +261,80 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,Observer {
 			
 			case JOB:
 			case STAT:
-			case LEVEL: this.computeNewStats();
-			
+			case LEVEL: this.showNewStats();break; 
+			case OK_STATIC: this.copyRawStats();break; // the "OK" button in the StaticInputPanel was clicked
+			case OK_DYNAMIC: this.saveNewStats(); // the "OK" button in the DynamicInputPanel was clicked			
 			}
 			
 		}
+		
+		/**
+		 * This method is called when the user presses the "OK" button in a DynamicInputPanel, it will signal
+		 * that the changes made in the previous InputArea are final which means that we can update 
+		 * the statsBuffer.
+	     */
 
-		private void computeNewStats() {
+		private void saveNewStats() {
 			
-			Job currentJob = Job.valueOf(Job.class,
-					((String)this.jobs.getSelectedItem()).toUpperCase());
-					
-			int currentLevel = Integer.parseInt(this.currentLevel.getText());
-			int nextLevel = Integer.parseInt(this.nextLevel.getText());
-			this.stats.computeStat(currentLevel, nextLevel, currentJob);
+			this.statsBuffer.setStats(this.stats);
+			
+		}
+
+		/**
+		 * This method is called when the "OK" Button in the StaticInputArea is pressed
+		 * Copy the values in the raw StatsPanel into this object, then refresh the GUI.
+		 */
+		private void copyRawStats() {
+			
+			CharacterStatsPanel parent = (CharacterStatsPanel) this.getParent().getParent();
+			StaticInputPanel staticInput = parent.getStaticInputPanel();
+			StatsPanel rawStatsPanel = staticInput.getRawStats();
+			
+			this.stats.setStats(rawStatsPanel.stats);
 			this.changeStats();
+			this.statsBuffer = new Stats(this.stats);
+		}
+
+		/**
+		 * Extract the needed components from the parent CharacterStatsPanel, then
+		 * get the needed values (job, nextLevel and currentLevel) in order
+		 * to calculate the new stats based of the older ones. Use the
+		 * statBuffer instead of the actual stats because this method will
+		 * only show the newStats. After showing the stats, the StatsPanel
+		 * internal Stats object will reset to the previous one that was stored in the
+ 		 * statBuffer attribute.
+		 */
+		private void showNewStats() {
+			
+			/* revert back to the previous stats (otherwise every time the user enters a value the program
+			   will recalculate over the previous value and give erronous values */
+			this.stats.setStats(this.statsBuffer); 
+
+			/* get all the needed components */
+			CharacterStatsPanel parent = (CharacterStatsPanel) this.getParent().getParent();
+			DynamicInputPanel dynamicInput = parent.getDynamicInputPanel();
+			InputArea lastInputArea = dynamicInput.getLastInputArea();
+			this.job = lastInputArea.getJob();
+			this.nextLevel = lastInputArea.getNextLevel();
+			this.currentLevel = lastInputArea.getCurrentLevel();
+			
+			/* extract the currentLevel and nextLevel from these components */
+			String textCurrentLevel = this.currentLevel.getText();
+			String nextCurrentLevel = this.nextLevel.getText();
+			
+			/* will happen when deleting or replacing a value */
+			if(textCurrentLevel.equals("") || nextCurrentLevel.equals("")) 
+					
+				return; 
+			
+			/* parse values to int */
+			int currentLevel = Integer.parseInt(textCurrentLevel);
+			int nextLevel = Integer.parseInt(nextCurrentLevel);
+			
+			/* show the new stats */
+			this.stats.computeStat(currentLevel, nextLevel, this.job);
+			this.changeStats();
+			
 		}
 		
 	}

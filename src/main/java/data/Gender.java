@@ -25,7 +25,6 @@ public enum Gender {
     private final double rawSpeed;
     private final double rawPa;
     private final double rawMa;
-    private static boolean firstToStringCall = false;
 
     public double[] getRawHps() {
         return Arrays.copyOf(rawHps,rawHps.length);

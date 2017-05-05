@@ -1,9 +1,7 @@
 package gui;
 
-import java.awt.*;
 import javax.swing.*;
 
-import gui.StatsPanel.FinalStatsPanel;
 import gui.menu.TacticMenuBar;
 
 
@@ -23,11 +21,15 @@ public final class FrameApp extends JFrame{
 	
 	private JTabbedPane tab;
 	
+	/**
+	 * The primary frame of the program. Check CharacterStatPanel to see what the actual content of this program
+	 * looks like.
+	 */
 	public FrameApp() {
 		
 		GuiConfig config = GuiConfig.getInstance();
 		
-		this.setTitle("Final Fantasy Tactic 1.3 Growth Calculator");
+		this.setTitle(config.TITLE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(config.FRAME_SIZE);
 		this.setIcon();	

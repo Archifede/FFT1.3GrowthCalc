@@ -7,7 +7,7 @@ import java.util.Observer;
 import javax.swing.*;
 
 import data.Params;
-import gui.components.ButtonContants;
+import gui.components.ButtonConstants;
 import gui.components.ValuesConstants;
 import gui.listeners.ButtonListener;
 
@@ -19,7 +19,7 @@ import gui.listeners.ButtonListener;
  * 
  * @author Only Brad
  */
-final class DynamicInputPanel extends JPanel implements Observer,ButtonContants,ValuesConstants {
+final class DynamicInputPanel extends JPanel implements Observer,ButtonConstants,ValuesConstants {
 	
 	
 	/**
@@ -79,8 +79,8 @@ final class DynamicInputPanel extends JPanel implements Observer,ButtonContants,
 	}
 	
 	/**
-	 * Attach the Job combobox listener and the level text field documentlistener to the output, so
-	 * that the output can change the stats value whenever the job is changed or the levels are changed.
+	 * Attach the Job ComboBoxListener and the LevelTextField's DocumentListener to the output, so
+	 * that the output can change the stats whenever the job is changed or the levels are changed.
 	 * @param inputArea 
 	 */
 	private void attachToOutput(InputArea inputArea) {
@@ -97,18 +97,23 @@ final class DynamicInputPanel extends JPanel implements Observer,ButtonContants,
 	 * add a listener to the "OK" button on the inputArea so that a new InputArea can be 
 	 * created when pressed.
      * Register this panel with the OK Button's ActionListener so that its notified 
-     * when the "OK" button gets clicked
+     * when the "OK" button gets clicked.
+     * Also register the output of the CharacterStatsPanel with the OK Button's ActionListener so
+     * that it notifies it that the previous InputArea is no longer used and the stats that are shown
+     * are final.
      * 
      * @param inputArea the area whose OK button need to be observed
 	 */
 	void addButtonListener(InputArea inputArea) {
 	
-		ButtonListener buttonListener = new ButtonListener(OK);
+		CharacterStatsPanel parent = (CharacterStatsPanel) this.getParent().getParent();
+		
+		ButtonListener buttonListener = new ButtonListener(OK_DYNAMIC);
 		buttonListener.addObserver(this); 
+		buttonListener.addObserver(parent.getOutput());
 		inputArea.getOkButton().addActionListener(buttonListener);
-	
+		
 	}
-
 
 	/**
 	 * Notify the CharacterStatPanel container panel that a new inputArea was added
@@ -124,11 +129,22 @@ final class DynamicInputPanel extends JPanel implements Observer,ButtonContants,
 
 	/**
 	 * 
-	 * @return all the current InputArea in the DynamicInputPanel
+	 * @param position the index of the InputArea that will be returned
+	 * @return return the InputArea at the index position
+	 * 
 	 */
-	InputArea[] getInputAreas() {
+	InputArea getInputArea(int position) {
 		
-		return (InputArea[]) this.getComponents();
+		return (InputArea) this.getComponent(position);
+	}
+	
+	/**
+	 * 
+	 * @return the last InputArea in this object
+	 */
+	InputArea getLastInputArea() {
+		
+		return this.getInputArea(this.getComponentCount()-1);
 	}
 
 	@Override
@@ -139,9 +155,9 @@ final class DynamicInputPanel extends JPanel implements Observer,ButtonContants,
 		
 		switch(code) {
 		
-		/* if the OK button got clicked, then create a new InputArea then
+		/* if the OK button in the DynamicInputPanel got clicked, then create a new InputArea then
 		refresh the GUI*/
-		case OK: 
+		case OK_DYNAMIC: 
 			this.createNewInputArea();
 			this.revalidate();
 			this.repaint();

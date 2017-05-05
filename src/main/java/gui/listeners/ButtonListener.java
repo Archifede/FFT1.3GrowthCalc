@@ -2,7 +2,7 @@ package gui.listeners;
 
 import java.util.Observable;
 
-import gui.components.ButtonContants;
+import gui.components.ButtonConstants;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
  * @author Only Brad
  *
  */
-public class ButtonListener extends Observable implements ActionListener,ButtonContants {
+public class ButtonListener extends Observable implements ActionListener,ButtonConstants {
 		
 	private int code;
 	

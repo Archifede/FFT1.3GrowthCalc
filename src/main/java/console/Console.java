@@ -125,7 +125,8 @@ public class Console {
         return enumm[enummNum];
     }
 
-    private <T extends Enum<T>> int inputChoice(Scanner scanner, Enum<T>[] enumm) {
+    @SuppressWarnings("rawtypes")
+	private <T extends Enum<T>> int inputChoice(Scanner scanner, Enum<T>[] enumm) {
         int choiceNum = 0;
         String scanned = scanner.next();
         if (NumberUtils.isDigits(scanned))

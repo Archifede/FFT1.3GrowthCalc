@@ -1,7 +1,6 @@
 package gui.listeners;
 
 import java.util.Observable;
-
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 

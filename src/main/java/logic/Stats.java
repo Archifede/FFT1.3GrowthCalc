@@ -12,7 +12,7 @@ import gui.components.ValuesConstants;
  */
 public class Stats implements ValuesConstants {
 	
-	private final double[] stats;
+	private double[] stats;
 	
 	public Stats(double[] rawStats) {
 		
@@ -24,6 +24,16 @@ public class Stats implements ValuesConstants {
 
 	}
 	
+	/**
+	 * Clone constructor
+	 * 
+	 * @param stats
+	 */
+	public Stats(Stats stats) {
+		
+		this.setStats(stats);
+	}
+
 	/**
 	 * recalculate the stats based of the current stats, the level, and the job
 	 * 
@@ -53,5 +63,40 @@ public class Stats implements ValuesConstants {
 	public double getStats(int stat) {
 		
 		return this.stats[stat];
+	}
+	
+	/**
+	 * 
+	 * @return a pointer to the internal array
+	 */
+	public double[] getStats() {
+		
+		return this.stats;
+	}
+	
+	/**
+	 * Clone another stat object
+	 * 
+	 * @param other the other stat object you are cloning
+	 */
+	public void setStats(Stats other) {
+		
+		double[] stats = new double[other.stats.length];
+		
+		for(int i=0;i<stats.length;i++)
+			
+			stats[i] = other.stats[i];
+		
+		this.stats = stats;
+	}
+	
+	/**
+	 * Modify the internal stats values
+	 * 
+	 * @param stats the values that are going to replace the older ones
+	 */
+	public void setStats(double[] stats) {
+		
+		this.stats = stats;
 	}
 }
