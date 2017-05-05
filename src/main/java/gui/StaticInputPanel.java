@@ -74,6 +74,8 @@ final class StaticInputPanel extends JPanel implements ValuesConstants,ButtonCon
 		
 		this.genders.addItemListener(this.genderListener = new ComboBoxListener(GENDER));
 		this.statsListener = this.rawStats.addValueListener();
+		
+		this.statsListener.addObserver(this.rawStats);
 		this.genderListener.addObserver(this.rawStats);
 		this.genderListener.addObserver(this.okButton);
 		

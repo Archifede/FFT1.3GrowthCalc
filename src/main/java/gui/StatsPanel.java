@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
 import data.Gender;
@@ -31,6 +32,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConsta
 	protected JTextField[] textFields;
 	protected String[] labels;
 	protected Stats stats;
+	protected ValueListener valueListener;
 	
 	
 	StatsPanel(String ... labels) {
@@ -63,7 +65,6 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConsta
 			int stat = (int) this.stats.getStats(i);
 			String textStat = String.valueOf(stat);
 			this.textFields[i].setText(textStat);
-		
 		}
 	}
 	
@@ -80,7 +81,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConsta
 			
 			this.textFields[i].getDocument().addDocumentListener(listener);
 		
-		return listener;
+		return this.valueListener = listener;
 	}
 
 	/**
@@ -181,7 +182,8 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConsta
 			/* if a field has been modified:
 			 * then calculate the new stats */
 			
-			case GENDER: this.computeRawStats();
+			case GENDER: this.computeRawStats();break;
+			case STAT: this.computeCustomStats();
 			
 			}
 		}
@@ -211,8 +213,37 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConsta
 			double ma = gender.getRawMa();
 			
 			this.stats.setStats(new double[]{hp,mp,sp,pa,ma});
+			
+			/*disable the listener of the textfield so that the textfield listener doesn't notify
+			its observers of changed. Since the InitialStatsPanel is observing itself, every time values are
+			written in it, it will notify itself of the changes which will case glitches. */
+			
+			this.valueListener.setActivated(false);
 			this.changeStats();
+			this.valueListener.setActivated(true);
 		}
+		
+		/**
+		 * Update the Stats object by using the values inside the JTextFields
+		 */
+		private void computeCustomStats() {
+			
+			double[] stats = new double[this.stats.getStats().length];
+				
+			for(int i=0;i<stats.length;i++) {
+					
+				if(this.textFields[i].getText().equals("")) //happens when deleting or replacing
+					
+					continue;
+				
+				stats[i] = Integer.parseInt(this.textFields[i].getText());
+				
+			}
+				
+			this.stats.setStats(stats);
+			
+		}
+
 		
 	}
 	
@@ -245,7 +276,6 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConsta
 			for(int i=0;i<this.textFields.length;i++)
 				
 				this.textFields[i].setEditable(false);
-			
 			
 		}
 		
@@ -282,7 +312,7 @@ abstract class StatsPanel extends JPanel implements ValuesConstants,ButtonConsta
 
 		/**
 		 * This method is called when the "OK" Button in the StaticInputArea is pressed
-		 * Copy the values in the raw StatsPanel into this object, then refresh the GUI.
+		 * Copy the values in the raw StatsPanel into the Stats object, then refresh the GUI.
 		 */
 		private void copyRawStats() {
 			

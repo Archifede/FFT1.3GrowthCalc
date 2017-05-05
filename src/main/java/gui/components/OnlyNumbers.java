@@ -40,9 +40,20 @@ public final class OnlyNumbers extends DocumentFilter {
 
 		sb.replace(offset, offset+length,text);
 		
-		// verify if the text is between minValue and maxValue
 		String filteredText = filterString(sb.toString());
-		if(filteredText != "" && verifyRange(Integer.parseInt(filteredText)))
+		int intValue = 0;
+		
+		try {
+			intValue = Integer.parseInt(filteredText);
+		}
+		/* this happens if the filteredText is a number that is bigger than Integer.MAX_VALUE;
+		don't do anything */
+		catch(NumberFormatException e) {
+			return;
+		}
+		
+		// verify if the text is between minValue and maxValue
+		if(filteredText != "" && verifyRange(intValue))
 		
 			fb.replace(offset, length, filterString(text), attrs); 
 		

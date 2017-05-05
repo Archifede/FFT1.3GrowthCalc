@@ -15,6 +15,7 @@ import javax.swing.event.DocumentListener;
 public final class ValueListener extends Observable implements DocumentListener {
 	
 	private int code;
+	private boolean activated; // if you want to temporarely disable this listener
 
 	/**
 	 * 
@@ -23,6 +24,7 @@ public final class ValueListener extends Observable implements DocumentListener 
 	public ValueListener(int code) {
 		
 		this.code = code;
+		this.activated = true;
 	}
 
 	@Override
@@ -49,8 +51,20 @@ public final class ValueListener extends Observable implements DocumentListener 
 	 */
 	private void changed() {
 		
-		this.setChanged();
-		this.notifyObservers(code);
+		if(this.activated) {
+			this.setChanged();
+			this.notifyObservers(code);
+		}
+	}
+	
+	/**
+	 * Method that enables or disables this listener
+	 * 
+	 * @param activated activated or not
+	 */
+	public void setActivated(boolean activated) {
+		
+		this.activated = activated;
 	}
 
 }
