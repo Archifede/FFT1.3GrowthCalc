@@ -68,4 +68,22 @@ public final class LevelTextField extends JTextField {
 		filter.setMaxLevel(maxLevel);
 	}
 	
+	/**
+	 * @return minLevel getter
+	 */
+	public int getMinLevel() {
+		
+		return this.minLevel;
+	}
+	
+	/**
+	 * @return maxLevel getter
+	 */
+	public int getMaxLevel() {
+		
+		return this.maxLevel;
+	}
+	
+	
+	
 }

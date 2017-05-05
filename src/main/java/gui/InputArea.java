@@ -166,7 +166,7 @@ final class InputArea extends JPanel implements Observer,ValuesConstants,ButtonC
 		currentLevel = Integer.parseInt(this.currentLevel.getText());
 		nextLevel = Integer.parseInt(this.nextLevel.getText());
 		
-		if(currentLevel >= nextLevel)
+		if(currentLevel >= nextLevel || nextLevel == this.nextLevel.getMaxLevel())
 			
 			this.ok.setEnabled(false);
 		

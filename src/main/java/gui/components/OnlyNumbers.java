@@ -47,7 +47,7 @@ public final class OnlyNumbers extends DocumentFilter {
 			intValue = Integer.parseInt(filteredText);
 		}
 		/* this happens if the filteredText is a number that is bigger than Integer.MAX_VALUE;
-		don't do anything */
+		don't do */
 		catch(NumberFormatException e) {
 			return;
 		}
